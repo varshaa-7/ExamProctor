@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { useRegisterMutation } from './../../slices/usersApiSlice';
 import { setCredentials } from './../../slices/authSlice';
 import Loader from './Loader';
+import ThemeToggle from 'src/components/shared/ThemeToggle';
 
 const userValidationSchema = yup.object({
   name: yup.string().min(2).max(25).required('Please enter your name'),
@@ -56,10 +57,6 @@ const Register = () => {
     }
   }, [navigate, userInfo]);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-  };
-
   const handleSubmit = async ({ name, email, password, confirm_password, role }) => {
     if (password !== confirm_password) {
       toast.error('Passwords do not match');
@@ -93,6 +90,10 @@ const Register = () => {
           },
         }}
       >
+        {/* Theme toggle top-right */}
+        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 9 }}>
+          <ThemeToggle />
+        </Box>
         <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
           <Grid
             item

@@ -16,6 +16,7 @@ import { useLoginMutation } from './../../slices/usersApiSlice';
 import { setCredentials } from './../../slices/authSlice';
 import { toast } from 'react-toastify';
 import Loader from './Loader';
+import ThemeToggle from 'src/components/shared/ThemeToggle';
 
 const userValidationSchema = yup.object({
   email: yup.string('Enter your email').email('Enter a valid email').required('Email is required'),
@@ -72,7 +73,7 @@ const Login = () => {
 
   return (
     <PageContainer title="Login" description="this is Login page">
-      <Box
+  <Box
         sx={{
           position: 'relative',
           '&:before': {
@@ -87,6 +88,10 @@ const Login = () => {
           },
         }}
       >
+        {/* Theme toggle top-right */}
+        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 9 }}>
+          <ThemeToggle />
+        </Box>
         <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
           <Grid
             item

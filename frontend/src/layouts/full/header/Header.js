@@ -16,11 +16,14 @@ import _ from 'lodash';
 import Profile from './Profile';
 import { IconMenu } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
+// ThemeToggle handles theme context and tooltip
+import ThemeToggle from 'src/components/shared/ThemeToggle';
 
 const Header = (props) => {
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
   const { userInfo } = useSelector((state) => state.auth);
+  // theme toggle moved to centralized ThemeToggle component
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: '2px',
@@ -56,6 +59,8 @@ const Header = (props) => {
   {/* Notification icon removed per request */}
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
+          {/* Theme toggle */}
+          <ThemeToggle sx={{ mr: 1 }} />
           <Typography variant="contained" color="primary">
             Hello, {_.startCase(userInfo.name)}
           </Typography>

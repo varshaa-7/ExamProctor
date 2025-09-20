@@ -1,6 +1,6 @@
 // Theme Provider
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { baselightTheme } from './theme/DefaultColors';
+import { ThemeModeProvider, useThemeMode } from './context/ThemeModeContext';
 // Router Provider
 import { RouterProvider } from 'react-router-dom';
 import Router from './routes/Router';
@@ -14,8 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 // Cheating Log Provider
 import { CheatingLogProvider } from './context/CheatingLogContext';
 
-function App() {
-  const theme = baselightTheme;
+function AppContent() {
+  const { theme } = useThemeMode();
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
@@ -26,6 +26,14 @@ function App() {
         </CheatingLogProvider>
       </Provider>
     </ThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <ThemeModeProvider>
+      <AppContent />
+    </ThemeModeProvider>
   );
 }
 
