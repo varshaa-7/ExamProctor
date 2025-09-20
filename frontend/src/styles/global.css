@@ -1,0 +1,73 @@
+/* Global visual polish: lavender accents, fade-in pages, animated buttons */
+:root{
+  --primary: #B57EDC;
+  --primary-dark: #8E58B0;
+  --primary-light: #F2EAF8;
+  --accent: #C9A6E9;
+  --bg: #ffffff;
+  --muted: #6b6b6b;
+}
+
+/* Page fade-in */
+.page-fade{
+  animation: fadeInUp 450ms ease both;
+}
+
+@keyframes fadeInUp{
+  from{opacity:0; transform: translateY(8px);}
+  to{opacity:1; transform: translateY(0);}
+}
+
+/* Smooth hover on buttons */
+button, .MuiButton-root{
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+button:hover, .MuiButton-root:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(142,88,176,0.12);
+}
+
+/* Primary filled button style */
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Floating action subtle glow */
+.fab-glow{
+  box-shadow: 0 10px 30px rgba(181,126,220,0.12);
+}
+
+/* Subtle card lift */
+.card-lift{
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.card-lift:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(34,34,34,0.08);
+}
+
+/* Headings accent underline */
+.heading-accent{
+  position: relative;
+}
+.heading-accent:after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  height: 6px;
+  width: 56px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0.9;
+}
+
+/* Soft transition for theme color changes */
+*{
+  transition: color 160ms ease, background-color 160ms ease;
+}

@@ -67,7 +67,41 @@ const baselightTheme = createTheme({
     divider: '#e5eaef',
   },
   typography,
-  shadows
+  shadows,
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          padding: '8px 16px',
+          transition: 'transform 160ms ease, box-shadow 160ms ease',
+        },
+        containedPrimary: {
+          backgroundColor: '#B57EDC',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#8E58B0',
+            transform: 'translateY(-2px)'
+          }
+        }
+      }
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          transition: 'box-shadow 240ms ease, transform 240ms ease',
+          '&:hover': {
+            transform: 'translateY(-6px)',
+            boxShadow: '0 12px 28px rgba(142,88,176,0.10)'
+          }
+        }
+      }
+    }
+  }
 },
   
 );
