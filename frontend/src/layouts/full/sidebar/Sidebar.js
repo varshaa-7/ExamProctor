@@ -51,7 +51,7 @@ const Sidebar = (props) => {
                 gap: 2, // adds spacing between logo and text
               }}
             >
-              <Logo />
+              {/* <Logo /> */}
 
               <Typography
                 variant="h2"
@@ -65,7 +65,7 @@ const Sidebar = (props) => {
                   mr: 5,
                 }}
               >
-                AI_EVAL_8
+                ExamEye
               </Typography>
             </Box>
 
@@ -107,7 +107,7 @@ const Sidebar = (props) => {
           width: '100%',
         }}
       >
-        <Logo />
+        {/* <Logo /> */}
         <Typography
           variant="h6"
           sx={{
@@ -117,7 +117,7 @@ const Sidebar = (props) => {
             ml: 1,
           }}
         >
-          AI EVAL_8
+          ExamEye
         </Typography>
       </Box>
       {/* ------------------------------------------- */}
