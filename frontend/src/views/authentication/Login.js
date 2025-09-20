@@ -105,13 +105,13 @@ const Login = () => {
                   component="h1" // This will render an <h1> element
                   style={{
                     fontWeight: 'bold',
-                    color: '#1976d2', // Primary color or any color you prefer
+                    color: '#C9A6E9', // Primary color or any color you prefer
                     margin: '20px 0',
                     textAlign: 'center',
                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)', // Optional shadow effect
                   }}
                 >
-                  AI_Evalu8
+                  ExamEye
                 </Typography>
               </Box>
               <AuthLogin

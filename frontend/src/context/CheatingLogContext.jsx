@@ -9,8 +9,7 @@ export const CheatingLogProvider = ({ children }) => {
     noFaceCount: 0,
     multipleFaceCount: 0,
     cellPhoneCount: 0,
-  prohibitedObjectCount: 0,
-  screenshots: [],
+    prohibitedObjectCount: 0,
     examId: '',
     username: userInfo?.name || '',
     email: userInfo?.email || '',
@@ -32,14 +31,12 @@ export const CheatingLogProvider = ({ children }) => {
       const updatedLog = {
         ...prev,
         ...newLog,
-        noFaceCount: Number(newLog.noFaceCount ?? prev.noFaceCount ?? 0),
-        multipleFaceCount: Number(newLog.multipleFaceCount ?? prev.multipleFaceCount ?? 0),
-        cellPhoneCount: Number(newLog.cellPhoneCount ?? prev.cellPhoneCount ?? 0),
+        noFaceCount: Number(newLog.noFaceCount || prev.noFaceCount || 0),
+        multipleFaceCount: Number(newLog.multipleFaceCount || prev.multipleFaceCount || 0),
+        cellPhoneCount: Number(newLog.cellPhoneCount || prev.cellPhoneCount || 0),
         prohibitedObjectCount: Number(
-          newLog.prohibitedObjectCount ?? prev.prohibitedObjectCount ?? 0,
+          newLog.prohibitedObjectCount || prev.prohibitedObjectCount || 0,
         ),
-        // Preserve screenshots array coming from newLog or existing state
-        screenshots: newLog.screenshots ?? prev.screenshots ?? [],
       };
       console.log('Updated cheating log:', updatedLog); // Debug log
       return updatedLog;

@@ -69,7 +69,6 @@ const TestPage = () => {
         multipleFaceCount: parseInt(cheatingLog.multipleFaceCount) || 0,
         cellPhoneCount: parseInt(cheatingLog.cellPhoneCount) || 0,
         prohibitedObjectCount: parseInt(cheatingLog.prohibitedObjectCount) || 0,
-  screenshots: cheatingLog.screenshots || [],
       };
 
       console.log('Submitting cheating log:', updatedLog);

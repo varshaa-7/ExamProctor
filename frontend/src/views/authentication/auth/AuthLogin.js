@@ -86,7 +86,7 @@ const AuthLogin = ({ formik, title, subtitle, subtext }) => {
               color: 'primary.main',
             }}
           >
-            Forgot Password ?
+            {/* Forgot Password ? */}
           </Typography>
         </Stack>
       </Stack>

@@ -117,7 +117,7 @@ const Register = () => {
                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)', // Optional shadow effect
                   }}
                 >
-                  AI_Evalu8
+                  ExamEye
                 </Typography>
               </Box>
               <AuthRegister

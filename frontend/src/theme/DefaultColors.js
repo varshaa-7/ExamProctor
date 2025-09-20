@@ -6,14 +6,16 @@ const baselightTheme = createTheme({
   direction: 'ltr',
   palette: {
     primary: {
-      main: '#5D87FF',
-      light: '#ECF2FF',
-      dark: '#4570EA',
+  // Lavender primary
+  main: '#B57EDC',
+  light: '#F2EAF8',
+  dark: '#8E58B0',
     },
     secondary: {
-      main: '#49BEFF',
-      light: '#E8F7FF',
-      dark: '#23afdb',
+  // Soft lavender accent
+  main: '#C9A6E9',
+  light: '#F6F0FB',
+  dark: '#A67BD0',
     },
     success: {
       main: '#13DEB9',
@@ -40,9 +42,9 @@ const baselightTheme = createTheme({
       contrastText: '#ffffff',
     },
     purple: {
-      A50: '#EBF3FE',
-      A100: '#6610f2',
-      A200: '#557fb9',
+  A50: '#F5EAF9',
+  A100: '#B57EDC',
+  A200: '#8E58B0',
     },
     grey: {
       100: '#F2F6FA',
