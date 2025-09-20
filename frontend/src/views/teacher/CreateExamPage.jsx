@@ -108,7 +108,7 @@ const CreateExamPage = () => {
 
   return (
     <PageContainer title="Create Exam" description="Create a new exam">
-      <Box
+      {/* <Box
         sx={{
           position: 'relative',
           '&:before': {
@@ -122,7 +122,7 @@ const CreateExamPage = () => {
             opacity: '0.3',
           },
         }}
-      >
+      > */}
         <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
           <Grid
             item
@@ -146,7 +146,7 @@ const CreateExamPage = () => {
             </Card>
           </Grid>
         </Grid>
-      </Box>
+      {/* </Box> */}
     </PageContainer>
   );
 };
