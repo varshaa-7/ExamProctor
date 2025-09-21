@@ -106,6 +106,52 @@ const TestPage = () => {
     document.addEventListener('webkitfullscreenchange', onFsChange);
     document.addEventListener('mozfullscreenchange', onFsChange);
     document.addEventListener('MSFullscreenChange', onFsChange);
+    // detect tab switching / visibility change
+    const handleVisibility = () => {
+      const now = Date.now();
+      if (document.hidden || document.visibilityState !== 'visible') {
+        if (now - lastFsExitRef.current > 3000) {
+          lastFsExitRef.current = now;
+          swal({
+            title: 'Left Test Tab',
+            text: 'You switched tabs or minimized the browser. Please return to the test tab to continue.',
+            icon: 'warning',
+            buttons: {
+              return: {
+                text: 'Return',
+                value: 'return',
+              },
+            },
+            dangerMode: true,
+          }).then(async (value) => {
+            if (value === 'return') {
+              // try to focus and re-enter fullscreen
+              try {
+                window.focus();
+                if (el.requestFullscreen) await el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+              } catch (e) {
+                console.warn('Return from tab switch failed', e);
+                swal('Could not re-enter fullscreen', 'Please press F11 or use your browser fullscreen control.', 'info');
+              }
+            }
+          });
+          // increment tabSwitchCount in cheating log
+          try {
+            updateCheatingLog({
+              ...cheatingLog,
+              tabSwitchCount: (cheatingLog.tabSwitchCount || 0) + 1,
+            });
+          } catch (e) {
+            console.warn('Failed to update cheating log for tab switch', e);
+          }
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleVisibility);
     onFsChange();
 
     return () => {
@@ -114,6 +160,8 @@ const TestPage = () => {
       document.removeEventListener('webkitfullscreenchange', onFsChange);
       document.removeEventListener('mozfullscreenchange', onFsChange);
       document.removeEventListener('MSFullscreenChange', onFsChange);
+  document.removeEventListener('visibilitychange', handleVisibility);
+  window.removeEventListener('blur', handleVisibility);
     };
   }, []);
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import swal from 'sweetalert';
 import { Editor } from '@monaco-editor/react';
 import axiosInstance from '../../axios';
 import Webcam from '../student/Components/WebCam';
@@ -32,6 +33,8 @@ export default function Coder() {
   const { cheatingLog, updateCheatingLog } = useCheatingLog();
   const [saveCheatingLogMutation] = useSaveCheatingLogMutation();
 
+  const lastFsExitRef = useRef(0);
+
   useEffect(() => {
     if (userInfo) {
       updateCheatingLog((prevLog) => ({
@@ -41,6 +44,126 @@ export default function Coder() {
       }));
     }
   }, [userInfo]);
+
+  // request fullscreen on mount and detect tab switches / fullscreen exits
+  useEffect(() => {
+    const el = document.documentElement;
+
+    const enterFullscreen = async () => {
+      try {
+        if (el.requestFullscreen) await el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+        else if (el.msRequestFullscreen) el.msRequestFullscreen();
+      } catch (e) {
+        console.warn('Fullscreen request blocked or failed', e);
+      }
+    };
+
+    const handleFsChange = () => {
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      const currentlyFs = !!fsEl;
+      if (!currentlyFs) {
+        const now = Date.now();
+        if (now - lastFsExitRef.current > 3000) {
+          lastFsExitRef.current = now;
+          swal({
+            title: 'Fullscreen Exited',
+            text: 'You exited fullscreen. Please return to fullscreen to continue the test.',
+            icon: 'warning',
+            buttons: {
+              return: {
+                text: 'Return',
+                value: 'return',
+              },
+            },
+            dangerMode: true,
+          }).then(async (value) => {
+            if (value === 'return') {
+              try {
+                if (el.requestFullscreen) await el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+              } catch (e) {
+                console.warn('Fullscreen request failed', e);
+                swal('Could not re-enter fullscreen', 'Please press F11 or use your browser fullscreen control.', 'info');
+              }
+            }
+          });
+          try {
+            updateCheatingLog({
+              ...cheatingLog,
+              fullscreenExitCount: (cheatingLog.fullscreenExitCount || 0) + 1,
+            });
+          } catch (e) {
+            console.warn('Failed to update cheating log for fullscreen exit', e);
+          }
+        }
+      }
+    };
+
+    const handleVisibility = () => {
+      const now = Date.now();
+      if (document.hidden || document.visibilityState !== 'visible') {
+        if (now - lastFsExitRef.current > 3000) {
+          lastFsExitRef.current = now;
+          swal({
+            title: 'Left Test Tab',
+            text: 'You switched tabs or minimized the browser. Please return to the test tab to continue.',
+            icon: 'warning',
+            buttons: {
+              return: {
+                text: 'Return',
+                value: 'return',
+              },
+            },
+            dangerMode: true,
+          }).then(async (value) => {
+            if (value === 'return') {
+              try {
+                window.focus();
+                if (el.requestFullscreen) await el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+              } catch (e) {
+                console.warn('Return from tab switch failed', e);
+                swal('Could not re-enter fullscreen', 'Please press F11 or use your browser fullscreen control.', 'info');
+              }
+            }
+          });
+          try {
+            updateCheatingLog({
+              ...cheatingLog,
+              tabSwitchCount: (cheatingLog.tabSwitchCount || 0) + 1,
+            });
+          } catch (e) {
+            console.warn('Failed to update cheating log for tab switch', e);
+          }
+        }
+      }
+    };
+
+    const t = setTimeout(() => enterFullscreen(), 300);
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+    document.addEventListener('mozfullscreenchange', handleFsChange);
+    document.addEventListener('MSFullscreenChange', handleFsChange);
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleVisibility);
+    handleFsChange();
+
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+      document.removeEventListener('mozfullscreenchange', handleFsChange);
+      document.removeEventListener('MSFullscreenChange', handleFsChange);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', handleVisibility);
+    };
+  }, []);
 
   // Fetch coding question when component mounts
   useEffect(() => {
