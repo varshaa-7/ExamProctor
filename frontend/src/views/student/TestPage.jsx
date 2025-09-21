@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid, CircularProgress } from '@mui/material';
+import swal from 'sweetalert';
 import PageContainer from 'src/components/container/PageContainer';
 import BlankCard from 'src/components/shared/BlankCard';
 import MultipleChoiceQuestion from './Components/MultipleChoiceQuestion';
@@ -22,6 +23,9 @@ const TestPage = () => {
   const [saveCheatingLogMutation] = useSaveCheatingLogMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMcqCompleted, setIsMcqCompleted] = useState(false);
+  
+  const lastFsExitRef = useRef(0);
+  
 
   useEffect(() => {
     if (userExamdata) {
@@ -34,6 +38,86 @@ const TestPage = () => {
       }
     }
   }, [userExamdata, examId]);
+
+  useEffect(() => {
+  const el = document.documentElement;
+
+    const enterFullscreen = async () => {
+      try {
+        if (el.requestFullscreen) await el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+        else if (el.msRequestFullscreen) el.msRequestFullscreen();
+      } catch (e) {
+        console.warn('Fullscreen request blocked or failed', e);
+      }
+    };
+
+    const onFsChange = () => {
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      const currentlyFs = !!fsEl;
+  if (!currentlyFs) {
+        // debounce repeated exits
+        const now = Date.now();
+        if (now - lastFsExitRef.current > 3000) {
+          lastFsExitRef.current = now;
+          // show same style warning as other detections but provide a Return button
+          swal({
+            title: 'Fullscreen Exited',
+            text: 'You exited fullscreen. Please return to fullscreen to continue the test.',
+            icon: 'warning',
+            buttons: {
+              return: {
+                text: 'Return',
+                value: 'return',
+              },
+            },
+            dangerMode: true,
+          }).then(async (value) => {
+            if (value === 'return') {
+              const el = document.documentElement;
+              try {
+                if (el.requestFullscreen) await el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+              } catch (e) {
+                console.warn('Fullscreen request failed', e);
+                // If request fails, show a small info swal so user knows
+                swal('Could not re-enter fullscreen', 'Please press F11 or use your browser fullscreen control.', 'info');
+              }
+            }
+          });
+          // increment fullscreenExitCount in cheating log
+          try {
+            updateCheatingLog({
+              ...cheatingLog,
+              fullscreenExitCount: (cheatingLog.fullscreenExitCount || 0) + 1,
+            });
+          } catch (e) {
+            console.warn('Failed to update cheating log for fullscreen exit', e);
+          }
+  }
+  }
+    };
+
+  const t = setTimeout(() => enterFullscreen(), 300);
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    document.addEventListener('mozfullscreenchange', onFsChange);
+    document.addEventListener('MSFullscreenChange', onFsChange);
+    onFsChange();
+
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener('fullscreenchange', onFsChange);
+      document.removeEventListener('webkitfullscreenchange', onFsChange);
+      document.removeEventListener('mozfullscreenchange', onFsChange);
+      document.removeEventListener('MSFullscreenChange', onFsChange);
+    };
+  }, []);
+
+  
 
   const [questions, setQuestions] = useState([]);
   const { data, isLoading } = useGetQuestionsQuery(examId);
@@ -103,7 +187,7 @@ const TestPage = () => {
 
   return (
     <PageContainer title="TestPage" description="This is TestPage">
-      <Box pt="3rem">
+  <Box pt="3rem">
         <Grid container spacing={3}>
           <Grid item xs={12} md={7} lg={7}>
             <BlankCard>
@@ -170,6 +254,7 @@ const TestPage = () => {
           </Grid>
         </Grid>
       </Box>
+  {/* Non-modal fullscreen exit handled via sweetalert in onFsChange */}
     </PageContainer>
   );
 };
